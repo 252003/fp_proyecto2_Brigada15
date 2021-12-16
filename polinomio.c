@@ -1,91 +1,94 @@
-#include "polinomio.h”
+#include "polinomio.h"
 char *pol_cdn;
-//ARCHIVOS
+//-----ARCHIVOS-----
 void open_in_file(char *filename){
-    infile = fopen(filename,"r");
-    if(!infile){
-        printf("No tienes permisos suficientes para abrir %s\n", filename);
-    }
+	infile = fopen(filename,"r");
+	if(!infile){
+		printf("No tienes permisos suficientes para abrir %s\n", filename);
+	}
 }
 void open_out_file(char *filename){
-    outfile = fopen(filename, "w");
-    if(!outfile){
-        printf("No tienes permisos para abrir %s\n", filename);
-    }
+	outfile = fopen(filename, "w");
+	if(!outfile){
+		printf("No tienes permisos para abrir %s\n", filename);
+	}
 }
 void close_file(FILE *f){
-    fclose(f);
+	fclose(f);
 }
-//AUXILIARES
+//----AUXILIARES----
 /**
- * @brief Calcula la potencia
+ * @brief Calcula la potencia 
  *
  * @param base
  * @param expo
- * @return int El valor de la potencia
+ * @return int el valor de la potencia
  */
-int pot(int base, int expo)
+int pot(int base, int exp)
 {
     int res = 1;
-    for (int i = 0; i < expo; i++)
+    for (int i = 0; i < exp; i++)
     {
         res = res * base;
     }
     return res;
 }
 /**
- * @brief Comvierte una cadena
+ * @brief convierte una cadena que representa un entero 
  *
- * @param str Cadena a convertir
+ * @param str cadena a convertir
+ * @return int
  */
 int strtoi(char *str)
 {
     int res = 0;
-    int num;
+    int numero;
     int exp = strlen(str) - 1;
     for (int i = 0; i < strlen(str); i++)
     {
-        num = ((int)str[i] - 48) * pot(10, exp - i);
-        res += num;
+        numero = ((int)str[i] - 48) * pot(10, exp - i);
+        res += numero;
     }
     return res;
 }
- 
+
 /**
- * @brief Copia de una cadena
+ * @brief copia de una cadena 
  *
- * @param str Cadena fuente
- * @param a (a,b] Rango
- * @param b
- * @return char*  sub cadena
+ * @param str cadena fuente
+ * @param x rango
+ * @param y
+ * @return char* La sub cadena
  */
-char *strcpyrng(char *str, int a, int b)
+char *strcpyrng(char *str, int x, int y)
 {
-    if (b - a == 0)
+    if (y - x == 0)
     {
         char *ret = (char *)malloc(sizeof(char));
         ret[0] = '1';
         return ret;
     }
-    char *ret = (char *)malloc((b - 1 - a) * sizeof(char));
-    for (int i = 0; i < b - a; i++)
+    char *ret = (char *)malloc((y - 1 - x) * sizeof(char));
+    for (int i = 0; i < y - x; i++)
     {
-        ret[i] = str[a + 1 + i];
+        ret[i] = str[x + 1 + i];
     }
-    ret[b - a] = '\0';
+    ret[y - x] = '\0';
     return ret;
 }
 /**
- * @brief Busca un carracter en cualquier cadena
+ * @brief busca un caracter en un a cadena
  *
- * @param a Cadena en la que buscar
+ * @param a Cadena a buscar
  * @param b El caracter a buscar
+ * @return true (verdadero)
+ * @return false (falso)
  */
 bool find(char *a, char b)
 {
-    int o = strlen(a);
+    int u = strlen(a);
     bool flag = false;
-    for (int i = 0; i < o; i++)
+    for (int i = 0; i < u; i++)
     {
         if (a[i] == b)
         {
@@ -96,18 +99,18 @@ bool find(char *a, char b)
     return flag;
 }
 /**
- * @brief Busca un caracter en un arrgleo
+ * @brief busca un caracter en un arrgleo
  *
- * @param str El arreglo en que buscar
- * @param c El caracter a buscar
- * @return El indice en el que encuentra el primer caracter
+ * @param str el arreglo a buscar
+ * @param d el caracter a buscar
+ * @return int el indice del primer caracter              
  */
-int findstrc(char *str, char c)
+int findstrc(char *str, char d)
 {
     int pos = 0;
     for (int i = 0; i < strlen(str); i++)
     {
-        if (str[i] == c)
+        if (str[i] == d)
         {
             return i;
         }
@@ -124,7 +127,7 @@ void menu()
     printf("3.Multiplicacion por un escalar\n");
     printf("4.Multiplicacion\n");
     printf("5.Division\n");
-    printf("6.Imprimir memoria\n");
+    printf("6.Imprimir\n");
     printf("7.Leer polinomio de teclado\n");
     printf("8.Leer polinomio de archivo\n");
     printf("9.Escribir polinomio\n");
@@ -132,106 +135,111 @@ void menu()
     printf("11.\n");
     printf("12.Salir\n");
 }
+
+
 void init()
 {
     memoria.polis = initmemory();
     memoria.cont = 0;
 }
 /**
- * @brief Aplica el teorema del resiudo
  *
- * @param Polinomio que se va a evaluar
- * @param x Valor a evaluar
- * @return double
+ * @param A polinomio a evaluar
+ * @param x el valor a evaluar
  */
-//OPERACIONES
+//----OPERACIONES----
 double residuo(POL A, double x)
 {
-    double r;
+    double p;
     for (int i = 0; i < A.nter; i++)
     {
-        r = r + (A.ter[i].coef * pot(x, A.ter[i].exp));
+        p = p + (A.ter[i].coef * pot(x, A.ter[i].exp));
     }
-    return r;
+    return p;
 }
 /**
-Suma polinomios
+ * @brief suma de polinomios 
+ *
+ * @param X
+ * @param Y
+ * @return POL resultado
  */
-POL add(POL A, POL B)
+POL add(POL X, POL Y)
 {
-    POL C;
+    POL Z;
     float aux;
     float exp;
-    //INIDICES
+    //----INIDICES----
     int i = 0;
     int j = 0;
     int k = 0;
-    //VALORES
+    //----VALORES----
     bool flag = true;
-    if (A.ter[0].exp >= B.ter[0].exp)
+    //----PROCESO----
+    if (X.ter[0].exp >= Y.ter[0].exp)
     {
-        C.ter = (TERMINO *)malloc((A.ter[0].exp + 1) * sizeof(TERMINO));
-        C.nter = A.ter[0].exp + 1;
+        Z.ter = (TERMINO *)malloc((X.ter[0].exp + 1) * sizeof(TERMINO));
+        Z.nter = X.ter[0].exp + 1;
     }
     else
     {
-        C.ter = (TERMINO *)malloc((B.ter[0].exp + 1) * sizeof(TERMINO));
-        C.nter = B.ter[0].exp + 1;
+        Z.ter = (TERMINO *)malloc((Y.ter[0].exp + 1) * sizeof(TERMINO));
+        Z.nter = Y.ter[0].exp + 1;
     }
-    //SUMA
-    for (k = 0; k < C.nter; k++)
+    //----SUMA----
+    for (k = 0; k < Z.nter; k++)
     {
-        if (A.ter[i].exp == B.ter[j].exp)
+        if (X.ter[i].exp == Y.ter[j].exp)
         {
-            aux = (A.ter[i].exp + B.ter[j].exp);
-            if (aux != 0.0f){
-                C.ter[k].coef = A.ter[i].coef + B.ter[j].coef;
-                C.ter[k].exp = A.ter[i].exp;
+            aux = X.ter[i].coef + Y.ter[j].coef;
+            if(aux != 0.0f){
+                Z.ter[k].coef = X.ter[i].coef + Y.ter[j].coef;
+                Z.ter[k].exp = X.ter[i].exp;
             }else{
                 k--;
             }
             i++;
             j++;
-            /*printf("a\n");*/
         }
-        else if (A.ter[i].exp > B.ter[j].exp)
+        else if (X.ter[i].exp > Y.ter[j].exp)
         {
-            C.ter[k] = A.ter[i];
+            Z.ter[k] = X.ter[i];
             i++;
-            /*printf("b\n");*/
         }
         else
         {
-            C.ter[k] = B.ter[j];
+            Z.ter[k] = Y.ter[j];
             j++;
-            /*printf("c\n");*/
         }
     }
     int cont = 0;
-    i = C.nter - 1;
-    while (C.ter[i].coef == 0.0f)
+    i = Z.nter - 1;
+    while (Z.ter[i].coef == 0.0f)
     {
         cont++;
         i--;
     }
-    C.ter = (TERMINO *)realloc(C.ter, (C.nter - cont) * sizeof(TERMINO));
-    C.nter = C.nter - cont;
-    return C;
+    Z.ter = (TERMINO *)realloc(Z.ter, (Z.nter - cont) * sizeof(TERMINO));
+    Z.nter = Z.nter - cont;
+    return Z;
 }
- 
+
 /**
  * @brief Resta de polinomio
+ * @param A
+ * @param B
+ * @return POL
  */
 POL sub(POL A, POL B)
 {
     POL C;
-    //INIDICES
-    int i = 0;
-    int j = 0;
-    int k = 0;
-    //VALORES
+    //----INDICES----
+    int l = 0;
+    int m = 0;
+    int n = 0;
+    //----VOLORES----
     bool flag = true;
-    //PROCESO
+    //----PROCESO----
     if (A.ter[0].exp >= B.ter[0].exp)
     {
         C.ter = (TERMINO *)malloc((A.ter[0].exp + 1) * sizeof(TERMINO));
@@ -242,195 +250,234 @@ POL sub(POL A, POL B)
         C.ter = (TERMINO *)malloc((B.ter[0].exp + 1) * sizeof(TERMINO));
         C.nter = B.ter[0].exp + 1;
     }
-    //RESTA
-    for (k = 0; k < C.nter; k++)
+    //----SUMA----
+    for (n = 0; n < C.nter; n++)
+
     {
-        if (A.ter[i].exp == B.ter[j].exp)
+        if (A.ter[l].exp == B.ter[m].exp)
         {
-            C.ter[k].coef = A.ter[i].coef - B.ter[j].coef;
-            C.ter[k].exp = A.ter[i].exp;
-            i++;
-            j++;
-            /* printf("a\n"); */
+            C.ter[n].coef = A.ter[l].coef - B.ter[m].coef;
+            C.ter[n].exp = A.ter[l].exp;
+            l++;
+            m++;
         }
-        else if (A.ter[i].exp > B.ter[j].exp)
+        else if (A.ter[l].exp > B.ter[m].exp)
         {
-            C.ter[k] = A.ter[i];
-            i++;
-            /*printf("b\n");*/
+            C.ter[n] = A.ter[l];
+            l++;
         }
         else
         {
-            C.ter[k].coef = (-1) * B.ter[j].coef;
-            C.ter[k].exp = B.ter[j].exp;
-            j++;
-            /* printf("c\n"); */
+            C.ter[n].coef = (-1) * B.ter[m].coef;
+            C.ter[n].exp = B.ter[m].exp;
+            m++;
         }
     }
     int cont = 0;
-    i = C.nter - 1;
-    while (C.ter[i].coef == 0.0f)
+    l = C.nter - 1;
+    while (C.ter[l].coef == 0.0f)
     {
         cont++;
-        i--;
+        l--;
     }
     C.ter = (TERMINO *)realloc(C.ter, (C.nter - cont) * sizeof(TERMINO));
     C.nter = C.nter - cont;
     return C;
 }
 /**
- * @brief Multiplicacion por escalar
+ * @brief Producto de pólinomios 
+ *
+ * @param X
+ * @param Y
+ * @return POL
  */
-POL esc_pol(POL A, double s)
+POL pol_prod(POL X, POL Y)
 {
-    POL C;
-    C.ter = (TERMINO *)malloc(A.nter * sizeof(TERMINO));
-    C.nter = A.nter;
-    for (int i = 0; i < C.nter; i++)
-    {
-        C.ter[i].coef = A.ter[i].coef * s;
-    }
-    return C;
-}
-/**
- * @brief Producto de pólinomios
- */
-POL pol_prod(POL A, POL B)
-{
-    POL C;
+    POL Z;
     TERMINO tauxi;
-    C.ter = (TERMINO *)malloc((A.ter[0].exp + B.ter[0].exp + 1) * sizeof(TERMINO));
-    C.nter = A.ter[0].exp + B.ter[0].exp + 1;
-    C.ter[0].exp = A.ter[0].exp + B.ter[0].exp;
-    for (int i = 0; i < A.nter; i++)
+    Z.ter = (TERMINO *)malloc((X.ter[0].exp + Y.ter[0].exp + 1) * sizeof(TERMINO));
+    Z.nter = X.ter[0].exp + Y.ter[0].exp + 1;
+    Z.ter[0].exp = X.ter[0].exp + Y.ter[0].exp;
+    for (int i = 0; i < X.nter; i++)
     {
-        for (int j = 0; j < B.nter; j++)
+        for (int j = 0; j < Y.nter; j++)
         {
-            tauxi.coef = A.ter[i].coef * B.ter[j].coef;
-            tauxi.exp = A.ter[i].exp + B.ter[j].exp;
-            for (int k = 0; k < C.nter; k++)
+            tauxi.coef = X.ter[i].coef * Y.ter[j].coef;
+            tauxi.exp = X.ter[i].exp + Y.ter[j].exp;
+            for (int k = 0; k < Z.nter; k++)
             {
-                if (tauxi.exp == C.ter[k].exp)
+                if (tauxi.exp == Z.ter[k].exp)
                 {
-                    C.ter[k].coef = C.ter[k].coef + tauxi.coef;
-                    C.ter[k].exp = tauxi.exp;
+                    Z.ter[k].coef = Z.ter[k].coef + tauxi.coef;
+                    Z.ter[k].exp = tauxi.exp;
                     break;
                 }
-                else if (C.ter[k + 1].coef == 0.0)
+                else if (Z.ter[k + 1].coef == 0.0)
                 {
-                    C.ter[k + 1] = tauxi;
+                    Z.ter[k + 1] = tauxi;
                     break;
                 }
             }
         }
     }
     int cont = 0;
-    int i = C.nter - 1;
-    while (C.ter[i].coef == 0.0f)
+    int i = Z.nter - 1;
+    while (Z.ter[i].coef == 0.0f)
     {
         cont++;
         i--;
     }
-    C.ter = (TERMINO *)realloc(C.ter, (C.nter - cont) * sizeof(TERMINO));
-    C.nter = C.nter - cont;
-    bubble_pol(C);
-    return C;
+    Z.ter = (TERMINO *)realloc(Z.ter, (Z.nter - cont) * sizeof(TERMINO));
+    Z.nter = Z.nter - cont;
+    bubble_pol(Z);
+    return Z;
 }
 /**
- * @brief Division
+ * @brief Multiplicacion por escalar
+ *
+ * @param D polinomio
+ * @param s escalar
+ * @return POL
  */
-POL pol_div(POL P, POL Q)
+POL esc_pol(POL D, double s)
 {
-    POL C;
-    POL ax;
-    double res = residuo(P, (-1) * Q.ter[1].coef);
-    C.ter = (TERMINO *)malloc((P.grd - Q.grd + 1) * sizeof(TERMINO));
-    C.nter = P.grd - Q.grd + 1;
-    int j = 1;
-    float f = (-1) * Q.ter[1].coef / Q.ter[0].coef;
-    int rnulas = P.ter[P.nter - 1].exp;
-    ax = polcpy(P);
-    pol_print(ax);
-    C.ter[0].coef = P.ter[0].coef;
-    C.ter[0].exp = P.ter[0].exp - 1;
-    for (int i = 1; i < C.nter; i++)
+    POL V;
+    V.ter = (TERMINO *)malloc(D.nter * sizeof(TERMINO));
+    V.nter = D.nter;
+    for (int i = 0; i < V.nter; i++)
     {
-        C.ter[i].coef = ax.ter[i].coef + (f * C.ter[i - 1].coef);
-        C.ter[i].exp = ax.ter[i].exp - 1;
+        V.ter[i].coef = D.ter[i].coef * s;
+    }
+    return V;
+}
+/**
+ * @brief Division 
+ *
+ * @param W
+ * @param H
+ * @return POL
+ */
+POL pol_div(POL W, POL H)
+{
+    POL D;
+    POL ax;
+    double res = residuo(W, (-1) * H.ter[1].coef);
+    D.ter = (TERMINO *)malloc((W.grd - H.grd + 1) * sizeof(TERMINO));
+    D.nter = W.grd - H.grd + 1;
+    int j = 1;
+    float f = (-1) * H.ter[1].coef / H.ter[0].coef;
+    int rnulas = W.ter[W.nter - 1].exp;
+    ax = polcpy(W);
+    pol_print(ax);
+    D.ter[0].coef = W.ter[0].coef;
+    D.ter[0].exp = W.ter[0].exp - 1;
+    for (int i = 1; i < D.nter; i++)
+    {
+        D.ter[i].coef = ax.ter[i].coef + (f * D.ter[i - 1].coef);
+        D.ter[i].exp = ax.ter[i].exp - 1;
     }
     free(ax.ter);
     int cont = 0;
-    int i = C.nter - 1;
-    while (C.ter[i].coef == 0.0f)
+    int i = D.nter - 1;
+    while (D.ter[i].coef == 0.0f)
     {
         cont++;
         i--;
     }
-    C.ter = (TERMINO *)realloc(C.ter, (C.nter - cont) * sizeof(TERMINO));
-    C.nter = C.nter - cont;
-    bubble_pol(C);
-    return C;
+    D.ter = (TERMINO *)realloc(D.ter, (D.nter - cont) * sizeof(TERMINO));
+    D.nter = D.nter - cont;
+    bubble_pol(D);
+    return D;
 }
 /**
- * @brief Copia un polinomio A y le baja el grado en 1 y llena de ceros
+ * @brief copia un polinomio
  *
- * @param A 4x^4
- * @return POL 4x^3 +0x^3 0x^2 0x 0
+ * @param A 
  */
 POL polcpy(POL A)
 {
-    POL C;
-    C.ter = (TERMINO *)malloc((A.grd + 1) * sizeof(TERMINO));
-    C.nter = A.grd + 1;
+    POL P;
+    P.ter = (TERMINO *)malloc((A.grd + 1) * sizeof(TERMINO));
+    P.nter = A.grd + 1;
     int j = 0;
-    for (int i = 0; i < C.nter; i++)
+    for (int i = 0; i < P.nter; i++)
     {
-        C.ter[i].exp = C.nter - i - 1;
+        P.ter[i].exp = P.nter - i - 1;
     }
-    for (int i = 0; i < C.nter; i++)
+    for (int i = 0; i < P.nter; i++)
     {
-        if (C.ter[i].exp == A.ter[j].exp)
+        if (P.ter[i].exp == A.ter[j].exp)
         {
-            C.ter[i].coef = A.ter[j].coef;
+            P.ter[i].coef = A.ter[j].coef;
             j++;
         }
     }
-    C.grd = C.nter - 1;
-    return C;
+    P.grd = P.nter - 1;
+    return P;
 }
 /*
- * @brief Metodo de ordenamiento por burbuja
+ * @brief ordenamiento por burbuja
+ *
+ * @param a el arreglo a ordenar
+ * @param n el tamaño del arreglo
  */
-void bubble_sort(int a[], int n)
+void bubble_sort(int s[], int m)
 {
     bool follow = true;
     int pasada, j;
-    int limite = n, aux;
+    int limite = m, aux;
     for (int pasada = 0; pasada < limite && follow; pasada++)
     {
         follow = false;
         for (j = 0; j < limite - 1 - pasada; j++)
         {
-            if (a[j] < a[j + 1])
+            if (s[j] < s[j + 1])
             {
-                aux = a[j];
-                a[j] = a[j + 1];
-                a[j + 1] = aux;
+                aux = s[j];
+                s[j] = s[j + 1];
+                s[j + 1] = aux;
                 follow = true;
             }
         }
     }
 }
- 
+
+//----ORDENAMIENTO POR BURBUJA----
 /**
- * @brief Crea un polinomio con una cantida de terminos igual a nterl y lee
+ * @brief implementamos el metodo de ordenamiento por burbuja 
+ * @param A Polinomio a ordenar de manera decreciente sus exponentes
+ */
+void bubble_pol(POL X)
+{
+    bool follow = true;
+    int pasada, j;
+    TERMINO aux;
+    for (int pasada = 0; pasada < X.nter && follow; pasada++)
+    {
+        follow = false;
+        for (j = 0; j < X.nter - 1 - pasada; j++)
+        {
+            if (X.ter[j].exp < X.ter[j + 1].exp)
+            {
+                aux = X.ter[j];
+                X.ter[j] = X.ter[j + 1];
+                X.ter[j + 1] = aux;
+                follow = true;
+            }
+        }
+    }
+}
+
+//----MEMORIA----
+/**
+ * @brief Crea un polinomio con una cantidad de terminos
  *
- * @param nterl El numero de terminos
- * @return POL La direccion de memoria para la estructura POL con ntel terminos
+ * @param nterl numero de terminos
+ * @return POL direccion de memoria 
  */
 POL pol_creat(int nterl)
 {
-    //<-----VARIABLES------>
+    //----VARIABLES----
     POL A;
     A.ter = (TERMINO *)malloc(nterl * sizeof(TERMINO));
     char c = '1';
@@ -439,10 +486,10 @@ POL pol_creat(int nterl)
     char *coef = (char *)malloc(sizeof(char));
     char *exp = (char *)malloc(sizeof(char));
     A.nter = nterl;
-    //<-----INDICES----->
-    int i = 0;
+    //----INDICES----
+    int k = 0;
     int j;
-    printf("Introduzca su polinomio: ");
+    printf("Escriba su polinomio: ");
     fflush(stdin);
     while (c != '\n')
     {
@@ -450,31 +497,30 @@ POL pol_creat(int nterl)
         c = getc(stdin);
         if (c == '\n')
         {
-            pol_aux = realloc(pol_aux, (i + 1) * sizeof(char));
-            pol_aux[i + 1] = '\0';
+            pol_aux = realloc(pol_aux, (k + 1) * sizeof(char));
+            pol_aux[k + 1] = '\0';
             break;
         }
-        pol_aux = (char *)realloc(pol_aux, (i + 2) * sizeof(char));
-        pol_aux[i] = c;
-        pol_aux[i + 1] = '\0';
-        i++;
-    } // a ya tiene mi cadena
-    i = 0;
+        pol_aux = (char *)realloc(pol_aux, (k + 2) * sizeof(char));
+        pol_aux[k] = c;
+        pol_aux[k + 1] = '\0';
+        k++;
+    } 
+    k = 0;
     j = 0;
-    for (; i < nterl; i++, pol_aux = NULL)
+    for (; k < nterl; k++, pol_aux = NULL)
     {
         termi = strtok(pol_aux, " ");
-        /*printf("%s\n", termi);*/
         if (termi != NULL)
         {
             if (find(termi, 'x'))
             {
-                if (strlen(termi) == 1) // x
+                if (strlen(termi) == 1) 
                 {
                     A.ter[j].coef = 1;
                     A.ter[j].exp = 1;
                 }
-                else if (strlen(termi) == 2) //-x //2x
+                else if (strlen(termi) == 2) 
                 {
                     if (termi[0] == '-')
                     {
@@ -488,12 +534,11 @@ POL pol_creat(int nterl)
                         A.ter[j].exp = 1;
                     }
                 }
-                else if (strlen(termi) == 3) // x^2    --    //22x  --- -2x
+                else if (strlen(termi) == 3) 
                 {
                     if (find(termi, '^'))
                     {
                         exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                        /* printf("Exponente %s\n", exp); */
                         A.ter[j].exp = strtoi(exp);
                         A.ter[j].coef = 1;
                     }
@@ -504,29 +549,25 @@ POL pol_creat(int nterl)
                         A.ter[j].exp = 1;
                     }
                 }
-                else if (strlen(termi) == 4) //-x^3 --- x^23 -22x 222x
+                else if (strlen(termi) == 4) 
                 {
                     if (termi[0] == '-' && termi[1] == 'x')
                     {
                         A.ter[j].coef = -1;
                         exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                        /* printf("Exponente %s\n", exp); */
                         A.ter[j].exp = strtoi(exp);
                     }
                     else if (termi[0] == 'x')
                     {
                         A.ter[j].coef = 1;
                         exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                        /* printf("Exponente %s\n", exp); */
                         A.ter[j].exp = strtoi(exp);
                     }
                     else
                     {
                         strncpy(coef, termi, findstrc(termi, 'x'));
                         A.ter[j].coef = strtof(coef, NULL);
-                        /* printf("Coeficiente %s\n", coef); */
                         exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                        /* printf("Exponente %s\n", exp); */
                         A.ter[j].exp = strtoi(exp);
                     }
                 }
@@ -535,7 +576,6 @@ POL pol_creat(int nterl)
                     strncpy(coef, termi, findstrc(termi, 'x'));
                     A.ter[j].coef = strtof(coef, NULL);
                     exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                    /* printf("Exponente %s\n", exp); */
                     A.ter[j].exp = strtoi(exp);
                 }
             }
@@ -554,9 +594,27 @@ POL pol_creat(int nterl)
     A.grd = A.ter[0].exp;
     return A;
 }
+
+//----ESCRITURA----
 /**
- * @brief Elimina el arreglo de terminos que esta dentro de la estructura POL
+ * @brief imprime un polinomio 
  *
+ * @param A
+ */
+void pol_print(POL X)
+{
+    for (int i = 0; i < X.nter; i++)
+    {
+        printf("%.4fx^%d  ", X.ter[i].coef, X.ter[i].exp);
+    }
+    printf("\n");
+}
+
+POL fpol_creat(char *pol_aux)
+{
+
+/**
+ * @brief Elimina el arreglo de terminos
  * @param A Polinomio al que borra los terminos
  */
 void pol_del(POL A)
@@ -574,11 +632,11 @@ POL *initmemory()
     d = (POL *)malloc(10 * sizeof(POL));
     return d;
 }
-void cpyinmem(POL A)
+void cpyinmem(POL C)
 {
     if (memoria.cont < 10)
     {
-        memoria.polis[memoria.cont] = A;
+        memoria.polis[memoria.cont] = C;
         memoria.cont++;
     }
     else
@@ -587,170 +645,126 @@ void cpyinmem(POL A)
         memoria.cont++;
     }
 }
-void printMemory(mem a)
+void printMemory(mem x)
 {
     printf("Memoria\n");
-    for (int i = 0; i < a.cont; i++)
+    for (int i = 0; i < x.cont; i++)
     {
         printf("%d) ", i + 1);
-        pol_print(a.polis[i]);
+        pol_print(x.polis[i]);
     }
 }
-POL recoMemory(mem a, int h)
+POL recoMemory(mem x, int h)
 {
-    POL C;
-    C.ter = (TERMINO *)malloc(a.polis[h - 1].nter * sizeof(TERMINO));
-    C.nter = a.polis[h - 1].nter;
-    for (int i = 0; i < C.nter; i++)
+    POL Z;
+    Z.ter = (TERMINO *)malloc(x.polis[h - 1].nter * sizeof(TERMINO));
+    Z.nter = x.polis[h - 1].nter;
+    for (int i = 0; i < Z.nter; i++)
     {
-        C.ter[i] = a.polis[h - 1].ter[i];
+        Z.ter[i] = x.polis[h - 1].ter[i];
     }
-    C.grd = a.polis[h - 1].grd;
-    return C;
+    Z.grd = x.polis[h - 1].grd;
+    return Z;
 }
-//ESCRITURA
-/**
- * @brief Imprime un polinomio A
- */
-void pol_print(POL A)
-{
-    for (int i = 0; i < A.nter; i++)
-    {
-        printf("%.4fx^%d  ", A.ter[i].coef, A.ter[i].exp);
-    }
-    printf("\n");
-}
-//ORDENAMIENTO
-/**
- * @brief Implementacion del metodo de ordenamiento por burbuja
- *
- * @param A Polinomio a ordenar de manera decreciente sus exponentes
- */
-void bubble_pol(POL A)
-{
-    bool follow = true;
-    int pasada, j;
-    TERMINO aux;
-    for (int pasada = 0; pasada < A.nter && follow; pasada++)
-    {
-        follow = false;
-        for (j = 0; j < A.nter - 1 - pasada; j++)
-        {
-            if (A.ter[j].exp < A.ter[j + 1].exp)
-            {
-                aux = A.ter[j];
-                A.ter[j] = A.ter[j + 1];
-                A.ter[j + 1] = aux;
-                follow = true;
-            }
-        }
-    }
-}
-POL fpol_creat(char *pol_aux)
-{
-    //VARIABLES
-    POL A;
-    A.nter=0;
+
+    //----VARIABLES----
+    POL X;
+    X.nter=0;
     char c = '1';
     char *termi = (char *)malloc(sizeof(char));
     char *coef = (char *)malloc(sizeof(char));
     char *exp = (char *)malloc(sizeof(char));
-    //INDICES
-    int i = 0;
+
+    //----INDICES----
+    int m = 0;
     int j;
     fflush(stdin);
-    i = 0;
+    m = 0;
     j = 0;
     for (;;pol_aux = NULL)
     {
         termi = strtok(pol_aux, " ");
-        A.nter++;
-        /*printf("%s\n", termi);*/
-        A.ter=(TERMINO*)realloc(A.ter,A.nter*sizeof(TERMINO));
+        X.nter++;
+        X.ter=(TERMINO*)realloc(X.ter,X.nter*sizeof(TERMINO));
         if (termi != NULL)
         {
             if (find(termi, 'x'))
             {
-                if (strlen(termi) == 1)
+                if (strlen(termi) == 1) 
                 {
-                    A.ter[j].coef = 1;
-                    A.ter[j].exp = 1;
+                    X.ter[j].coef = 1;
+                    X.ter[j].exp = 1;
                 }
-                else if (strlen(termi) == 2)
+                else if (strlen(termi) == 2) 
                 {
                     if (termi[0] == '-')
                     {
-                        A.ter[j].coef = -1;
-                        A.ter[j].exp = 1;
+                        X.ter[j].coef = -1;
+                        X.ter[j].exp = 1;
                     }
                     else
                     {
                         strncpy(coef, termi, findstrc(termi, 'x'));
-                        A.ter[j].coef = strtof(coef, NULL);
-                        A.ter[j].exp = 1;
+                        X.ter[j].coef = strtof(coef, NULL);
+                        X.ter[j].exp = 0;
                     }
                 }
-                else if (strlen(termi) == 3)
+                else if (strlen(termi) == 3) 
                 {
                     if (find(termi, '^'))
                     {
                         exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                        A.ter[j].exp = strtoi(exp);
-                        A.ter[j].coef = 1;
+                        X.ter[j].exp = strtoi(exp);
+                        X.ter[j].coef = 1;
                     }
                     else
                     {
                         strncpy(coef, termi, findstrc(termi, 'x'));
-                        A.ter[j].coef = strtof(coef, NULL);
-                        A.ter[j].exp = 1;
+                        X.ter[j].coef = strtof(coef, NULL);
+                        X.ter[j].exp = 1;
                     }
                 }
                 else if (strlen(termi) == 4)
                 {
                     if (termi[0] == '-' && termi[1] == 'x')
                     {
-                        A.ter[j].coef = -1;
+                        X.ter[j].coef = -1;
                         exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                        /* printf("Exponente %s\n", exp); */
-                        A.ter[j].exp = strtoi(exp);
+                        X.ter[j].exp = strtoi(exp);
                     }
                     else if (termi[0] == 'x')
                     {
-                        A.ter[j].coef = 1;
+                        X.ter[j].coef = 1;
                         exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                        /* printf("Exponente %s\n", exp); */
-                        A.ter[j].exp = strtoi(exp);
+                        X.ter[j].exp = strtoi(exp);
                     }
                     else
                     {
                         strncpy(coef, termi, findstrc(termi, 'x'));
-                        A.ter[j].coef = strtof(coef, NULL);
-                        /* printf("Coeficiente %s\n", coef); */
+                        X.ter[j].coef = strtof(coef, NULL);
                         exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                        /* printf("Exponente %s\n", exp); */
-                        A.ter[j].exp = strtoi(exp);
+                        X.ter[j].exp = strtoi(exp);
                     }
                 }
                 else if (strlen(termi) >= 5)
                 {
                     strncpy(coef, termi, findstrc(termi, 'x'));
-                    A.ter[j].coef = strtof(coef, NULL);
+                    X.ter[j].coef = strtof(coef, NULL);
                     exp = strcpyrng(termi, findstrc(termi, '^'), strlen(termi));
-                    /* printf("Exponente %s\n", exp); */
-                    A.ter[j].exp = strtoi(exp);
+                    X.ter[j].exp = strtoi(exp);
                 }
             }
             else
             {
-                A.ter[j].coef = strtof(termi, NULL);
-                A.ter[j].exp = 0;
+                X.ter[j].coef = strtof(termi, NULL);
+                X.ter[j].exp = 0;
             }
         }
         j++;
         if (termi == NULL) break;
     }
     free(pol_aux);
-    bubble_pol(A);
-    A.grd = A.ter[0].exp;
-    return A;
+    bubble_pol(X);
+    X.grd = X.ter[0].exp;
+    return X;
 }
