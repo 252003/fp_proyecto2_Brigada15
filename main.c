@@ -1,286 +1,286 @@
-#include "polinomio.h"
+#include <stdio.h >
+#include <stdlib.h >
+#include<string.h>
+#include "funciones.h"
 
-int main(int argc, char **argv)
+
+int opc;
+
+void menu()
 {
-    if (argc == 7)
-    {
-        if (strcmp(argv[1], "-in") == 0)
+  printf("Operaciones con polinomios \n");
+  printf("[1]Suma \n");
+  printf("[2]Resta\n");
+  printf("[3]Multiplicacion \n");
+  printf("[4]Multiplicacion por un Escalar\n");
+  printf("[5]Division entre binomio\n");
+  printf("[6]Division entre monomio\n");
+  printf("[7]leer polinomio(s) del teclado, imprimirlo(s) y guardarlo(s) en un archivo\n");
+  printf("[8]leer polinomio(s) de un archivo e imprimirlo\n");
+  printf("[9]Ordenar elementos por el metodo de burbuja\n");
+
+
+  printf("Selecciona Una Opcion:\n>");
+  scanf("%d",&opc);
+}
+
+
+//llenar memoria
+int** llenar(int grado, int num) {
+	int i,j;
+	int **m;
+	m = (int **)malloc(grado*sizeof(int*));
+	//int **m = new int*[grado];
+	for ( i = 0; i < grado; i++) {
+        m[i] = (int*)malloc(num*sizeof(int));
+//		m[i] = new int[num];
+		for ( j = 0; j <= num; j++) {
+			printf("Valor del coeficiente grado %i del polinomio %i: ", j, i+1);
+        	scanf("%d", &m[i][j]);
+			//m[i][j] = 0;
+		}
+	}
+	return m;
+}
+
+//guardar en archivo
+	void guardar(char *fileName, int **m, int grado, int num){
+
+	int i,j;
+
+	FILE *fp = fopen(fileName, "w");
+	if (fp == NULL) {
+		exit(EXIT_FAILURE);
+	}
+	char linea[80];
+	//sprintf(linea, "%d %d\n", filas, cols);
+	fputs(linea, fp);
+	for (i = 0; i < grado; i++) {
+		linea[0] = '\0';
+		for (j = 0; j <= num; j++) {
+
+			if(j == 0)
+        	{
+        	char buffer[50];
+			sprintf(buffer, "%d \t", m[i][j]);
+			strcat(linea, buffer);
+        	}
+        	else if(j == 1)
+        	{
+            char buffer[50];
+			sprintf(buffer, "%dx\t", m[i][j]);
+			strcat(linea, buffer);
+        	}
+        	else
+        	{
+            char buffer[50];
+			sprintf(buffer, "%dx^%i\t", m[i][j],j);
+			strcat(linea, buffer);
+
+        	}
+
+		}
+		int len = strlen(linea);
+		linea[len - 1] = '\n';
+		fputs(linea, fp);
+	}
+	fclose(fp);
+
+
+}
+
+//imprimir polinomios
+void imprimir(int **m, int grado, int num) {
+
+	int i,j;
+
+    for (i = 0; i < grado; i++) {
+		for (j = 0; j <= num; j++) {
+
+		if(j == 0)
         {
-            open_in_file(argv[2]);
+        	printf("%d\t", m[i][j]);
         }
-        else if (strcmp(argv[1], "-out") == 0)
+        else if(j == 1)
         {
-            open_out_file(argv[2]);
+            printf("%dx\t", m[i][j]);
         }
-        else if (strcmp(argv[1], "-re") == 0)
+        else
         {
-            open_registro(argv[2]);
+            printf("%dx^%i\t", m[i][j],j);
         }
-        if (strcmp(argv[3], "-in") == 0)
-        {
-            open_in_file(argv[4]);
-        }
-        else if (strcmp(argv[3], "-out") == 0)
-        {
-            open_out_file(argv[4]);
-        }
-        else if (strcmp(argv[3], "-re") == 0)
-        {
-            open_registro(argv[4]);
-        }
-        if (strcmp(argv[5], "-in") == 0)
-        {
-            open_in_file(argv[6]);
-        }
-        else if (strcmp(argv[5], "-out") == 0)
-        {
-            open_out_file(argv[6]);
-        }
-        else if (strcmp(argv[5], "-re") == 0)
-        {
-            open_registro(argv[6]);
-        }
-    }
-    if (argc == 5)
-    {
-        if (strcmp(argv[1], "-in") == 0)
-        {
-            open_in_file(argv[2]);
-        }
-        else if (strcmp(argv[1], "-out") == 0)
-        {
-            open_out_file(argv[2]);
-        }
-        else if (strcmp(argv[1], "-re") == 0)
-        {
-            open_registro(argv[2]);
-        }
-        if (strcmp(argv[3], "-in") == 0)
-        {
-            open_in_file(argv[4]);
-        }
-        else if (strcmp(argv[3], "-out") == 0)
-        {
-            open_out_file(argv[4]);
-        }
-        else if (strcmp(argv[3], "-re") == 0)
-        {
-            open_registro(argv[4]);
-        }
-    }
-    else if (argc == 3)
-    {
-        if (strcmp(argv[1], "-in") == 0)
-        {
-            open_in_file(argv[2]);
-        }
-        else if (strcmp(argv[1], "-out") == 0)
-        {
-            open_out_file(argv[2]);
-        }
-        else if (strcmp(argv[1], "-re") == 0)
-        {
-            open_registro(argv[2]);
-        }
-    }
-    POL X, Y, Z;
-    DIV D;
-    int t, t1;
-    int op;
-    float l;
-    char *polZ;
-    init();
-    while (op != 12)
-    {
-        system("clear");
-        menu();
-        printf("¿Qué desea realizar?\n");
-        scanf("%d", &op);
-        if (op < 1 || op > 10)
-        {
-            printf("Opción incorrecta, introduzca de nuevo\n");
-            scanf("%d", &op);
-        }
-        switch (op)
-        {
-        case 1:
-            printf("Suma\n");
-            cdnprint();
-            printf("Selecione 2 de acuerdo al numero y separados por un tabulador\n");
-            scanf("%d\t%d", &t, &t1);
-            X = recoMemory(memoria, t);
-            Y = recoMemory(memoria, t1);
-            Z = add(X, Y);
-            polZ = POLtoSTR(Z);
-            cpy_in_almacen(polZ);
-            cpyinmem(Z);
-            break;
-        case 2:
-            printf("Resta\n");
-            cdnprint();
-            printf("Selecione 2 de acuerdo al numero y separados por un tabulador\n");
-            scanf("%d\t%d", &t, &t1);
-            X = recoMemory(memoria, t);
-            Y = recoMemory(memoria, t1);
-            Z = sub(X, Y);
-            polZ = POLtoSTR(Z);
-            cpy_in_almacen(polZ);
-            cpyinmem(Z);
-            break;
-        case 3:
-            printf("Multiplicacion por escalar\n");
-            cdnprint();
-            printf("Selecione 1 deacuerdo al numero y un escalar separados por un tabulador\n");
-            scanf("%d\t%f", &t, &l);
-            X = recoMemory(memoria, t);
-            Z = esc_pol(X, l);
-            polZ = POLtoSTR(Z);
-            cpy_in_almacen(polZ);
-            cpyinmem(Z);
-            break;
-        case 4:
-            printf("Multiplicación\n");
-            cdnprint();
-            printf("Selecione 2 deacuerdo al numero y separelos por un tabulador\n");
-            scanf("%d\t%d", &t, &t1);
-            X = recoMemory(memoria, t);
-            Y = recoMemory(memoria, t1);
-            Z = pol_prod(X, Y);
-            polZ = POLtoSTR(Z);
-            cpy_in_almacen(polZ);
-            cpyinmem(Z);
-            break;
-        case 5:
-            printf("Division\n");
-            cdnprint();
-            printf("Selecione 2 deacuerdo al numero y separelos por un tabulador\n");
-            scanf("%d\t%d", &t, &t1);
-            X = recoMemory(memoria, t);
-            Y = recoMemory(memoria, t1);
-            D = div_larga(X, Y);
-            polZ = POLtoSTR(D.cociente);
-            cpy_in_almacen(polZ);
-            polZ = POLtoSTR(D.residuo);
-            cpy_in_almacen(polZ);
-            cpyinmem(D.cociente);
-            cpyinmem(D.residuo);
-            break;
-        case 6:
-            if (memoria.cont == 0)
-            {
-                printf("No hay nada en la memoria");
-            }
-            else
-            { 
-                cdnprint();
-            }
-            break;
-        case 7:
-            printf("Leer polinomio de teclado\n");
-            printf("Cuantos terminos tiene?\n");
-            scanf("%d", &t);
-            X = pol_creat(t);
-            pol_print(X);
-            cpyinmem(X);
-            break;
-        case 8:
-            printf("8.Leer polinomio de archivo\n");
-            Z = fread_pol(infile);
-            cpyinmem(Z);
-            break;
-        case 9:
-            printf("Escriba polinomio en archivo\n");
-            cdnprint();
-            printf("Seleciona tu polinomio: ");
-            scanf("%d", &t);
-            fwrite_pol(t);
-            break;
-        case 10:
-            printf("Salir\n");
-            if (argc == 7)
-            {
-                if (strcmp(argv[1], "-in") == 0)
-                {
-                    fclose(infile);
-                }
-                else if (strcmp(argv[1], "-out") == 0)
-                {
-                    fclose(outfile);
-                }
-                else if (strcmp(argv[1], "-re") == 0)
-                {
-                    fclose(registro);
-                }
-                if (strcmp(argv[3], "-in") == 0)
-                {
-                    fclose(infile);
-                }
-                else if (strcmp(argv[3], "-out") == 0)
-                {
-                    fclose(outfile);
-                }
-                else if (strcmp(argv[3], "-re") == 0)
-                {
-                    fclose(registro);
-                }
-                if (strcmp(argv[5], "-in") == 0)
-                {
-                    fclose(infile);
-                }
-                else if (strcmp(argv[5], "-out") == 0)
-                {
-                    fclose(outfile);
-                }
-                else if (strcmp(argv[5], "-re") == 0)
-                {
-                    fclose(registro);
-                }
-            }
-            else if (argc == 5)
-            {
-                if (strcmp(argv[1], "-in") == 0)
-                {
-                    fclose(infile);
-                }
-                else if (strcmp(argv[1], "-out") == 0)
-                {
-                    fclose(outfile);
-                }
-                else if (strcmp(argv[1], "-re") == 0)
-                {
-                    fclose(registro);
-                }
-                if (strcmp(argv[3], "-in") == 0)
-                {
-                    fclose(infile);
-                }
-                else if (strcmp(argv[3], "-out") == 0)
-                {
-                    fclose(outfile);
-                }
-                else if (strcmp(argv[3], "-re") == 0)
-                {
-                    fclose(registro);
-                }
-            }
-            else if (argc == 3)
-            {
-                if (strcmp(argv[1], "-in") == 0)
-                {
-                    fclose(infile);
-                }
-                else if (strcmp(argv[1], "-out") == 0)
-                {
-                    fclose(outfile);
-                }
-                else if (strcmp(argv[1], "-re") == 0)
-                {
-                    fclose(registro);
-                }
-                exit(0);
-                break;
-            }
-        }
-    }
+
+
+		}
+		printf("\n");
+	}
+}
+
+//leer polinomios de un archivo
+int** leer(char *fileName, int grado, int num) {
+
+	int i,j;
+	int **m;
+
+	FILE *fp = fopen(fileName, "r");
+	if (fp == NULL) {
+		exit(EXIT_FAILURE);
+	}
+	char linea[80];
+	fgets(linea, 79, fp);
+	char *token = strtok(linea, " ");//10 6
+	grado = atoi(token);
+	token = strtok(NULL, " ");
+	num = atoi(token);
+	m = (int **)malloc(grado*sizeof(int*));
+//	int **m = new int*[grado];
+	for (i = 0; i < grado; i++) {
+	    m[i] = (int*)malloc(num*sizeof(int));
+//		m[i] = new int[num];
+		fgets(linea,79, fp);
+		token = strtok(linea, " ");
+		m[i][0] = atoi(token);
+		for (j = 1; j <= num; j++) {
+			token = strtok(NULL, " ");
+			m[i][j] = atoi(token);
+		}
+	}
+	fclose(fp);
+	return m;
+
+
+}
+
+//[7]leer polinomio del teclado
+int polinomio_teclado()
+{
+	//int i,j;
+    int grado, num;
+
+    system("CLS");
+
+    printf("Ingrese el numero de polinomios a guardar : ");
+    scanf("%i", &grado );
+
+    printf("Ingrese el mayor grado del polinomio a guardar : ");
+    scanf("%i", &num);
+
+
+    int **M = llenar(grado, num);
+    imprimir(M, grado, num);
+    guardar("Polinomios.txt", M, grado, num);
+
+
     return 0;
+
+}
+
+//[8]leer polinomio de un archivo
+int polinomio_archivo()
+{
+	//int i;
+    int grado, num;
+
+    system("CLS");
+
+    printf("Ingrese el numero de polinomios a leer : ");
+    scanf("%i", &grado );
+
+    printf("Ingrese el mayor grado del polinomio a leer : ");
+    scanf("%i", &num);
+
+    printf("NOTA: El archivo a leer solo debe contener los coeficientes de los polinomios \n");
+
+    int **M2 = leer("Poli.txt", grado , num);
+	printf("Polinomios en el archivo: \n");
+	imprimir(M2, grado, num);
+
+
+    return 0;
+}
+
+//[9]Ordenar elementos por el metodo de burbuja
+int burbuja()
+{
+	int i,j;
+	int *coef;
+    int grado1, mov=0, aux;
+
+    system("CLS");
+
+    printf("Ingrese el grado del polinomio: ");
+    scanf("%i", &grado1);
+
+    /* inicializar arreglo  */
+    coef = (int*)malloc(grado1*sizeof(int));
+
+	 /* llenar arreglo con 0, para evitar errores */
+    for(i = 0; i < grado1; i++)
+    {
+        coef[i] = 0;
+    }
+
+    printf("\n\n----------------------------\n");
+    printf(" POLINOMIO\n");
+    printf("\n");
+
+    for(i = 0; i <= grado1; i++)
+    {
+        printf("Valor del coeficiente grado %i: ", i);
+        scanf("%d", &coef[i]);
+    }
+
+    printf("\n\n----------------------------\n");
+
+// Ordenación
+	for(i=0; i< grado1; i++){
+	// Comparaciones
+		for(j=0; j< grado1-i; j++)
+        {
+	// Intercambiar los elementos
+			if(coef[j] > coef[j+1])
+            {
+			aux=coef[j];
+			coef[j]=coef[j+1];
+			coef[j+1]=aux;
+			mov ++;
+            }
+        }
+    }
+
+    printf("\n\n----------------------------\n");
+    printf("RESULTADO\n");
+    printf("----------------------------\n");
+	printf("El numero de movimientos fue: %d \n",mov);
+	printf("\n");
+	printf("Los coeficientes ordenados son:  \n");
+
+    for(i = grado1; i >= 0; --i)
+    {
+    	if(i == 0)
+        {
+            printf("%d",  coef[i]);
+        }
+        else if(i == 1)
+        {
+            printf("%d  ",  coef[i]);
+        }
+        else
+        {
+            printf("%d  ", coef[i]);
+        }
+    }
+
+    return 0;
+
+}
+
+//MAIN
+
+int main()
+{
+    menu();
+    opcion(opc);
+    return 0;
+
 }
