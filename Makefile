@@ -1,22 +1,23 @@
-CC=gcc #Indicamos que el el compilador que se empleará es gcc
+CC=gcc #Indica que el compilador que se emplea es gcc
 CCDEBUG=-g -Wall
 CCSTD=-std=c99
 CCFLAGS= $(CCSTD) $(CCDEBUG)
 LIBS= -lm
-FILES= ecuaciones main
+FILES= funciones main
 CCFILES=$(addsuffix .c, $(FILES))
 OBJS=$(addsuffix .o, $(FILES))
  
 EXE=solucion
  
 .PHONY = all
-all: polinomio main polinomio
+all: funciones main 
  
-polinomio: polinomio.c
+funciones: funciones.c
     $(CC) $(CCFLAGS) -c $< -o polinomio.o $(LIBS)
  
 main: main.c
     $(CC) $(CCFLAGS) -c $< -o main.o
  
-polinomio: polinomio.h
+funciones: funciones.h
     $(CC) $(CCFLAGS) -c $< -o polinomio.o
+ 
