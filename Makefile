@@ -10,7 +10,7 @@ OBJS=$(addsuffix .o, $(FILES))
 EXE=solucion
  
 .PHONY = all
-all: funciones main 
+all: funciones main funciones
  
 funciones: funciones.c
     $(CC) $(CCFLAGS) -c $< -o polinomio.o $(LIBS)
