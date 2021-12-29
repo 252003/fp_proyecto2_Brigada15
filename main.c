@@ -24,7 +24,6 @@ void menu()
   scanf("%d",&opc);
 }
 
-
 //llenar memoria
 int** llenar(int grado, int num) {
 	int i,j;
@@ -41,10 +40,11 @@ int** llenar(int grado, int num) {
 		}
 	}
 	return m;
+	free(m);//liberar memoria
 }
 
 //guardar en archivo
-	void guardar(char *fileName, int **m, int grado, int num){
+void guardar(char *fileName, int **m, int grado, int num){
 
 	int i,j;
 
@@ -172,6 +172,7 @@ int polinomio_teclado()
 
 
     return 0;
+    free(M);//liberar memoria
 
 }
 
@@ -197,83 +198,10 @@ int polinomio_archivo()
 
 
     return 0;
+    free(M2);//liberar memoria
 }
 
-//[9]Ordenar elementos por el metodo de burbuja
-int burbuja()
-{
-	int i,j;
-	int *coef;
-    int grado1, mov=0, aux;
 
-    system("CLS");
-
-    printf("Ingrese el grado del polinomio: ");
-    scanf("%i", &grado1);
-
-    /* inicializar arreglo  */
-    coef = (int*)malloc(grado1*sizeof(int));
-
-	 /* llenar arreglo con 0, para evitar errores */
-    for(i = 0; i < grado1; i++)
-    {
-        coef[i] = 0;
-    }
-
-    printf("\n\n----------------------------\n");
-    printf(" POLINOMIO\n");
-    printf("\n");
-
-    for(i = 0; i <= grado1; i++)
-    {
-        printf("Valor del coeficiente grado %i: ", i);
-        scanf("%d", &coef[i]);
-    }
-
-    printf("\n\n----------------------------\n");
-
-// Ordenación
-	for(i=0; i< grado1; i++){
-	// Comparaciones
-		for(j=0; j< grado1-i; j++)
-        {
-	// Intercambiar los elementos
-			if(coef[j] > coef[j+1])
-            {
-			aux=coef[j];
-			coef[j]=coef[j+1];
-			coef[j+1]=aux;
-			mov ++;
-            }
-        }
-    }
-
-    printf("\n\n----------------------------\n");
-    printf("RESULTADO\n");
-    printf("----------------------------\n");
-	printf("El numero de movimientos fue: %d \n",mov);
-	printf("\n");
-	printf("Los coeficientes ordenados son:  \n");
-
-    for(i = grado1; i >= 0; --i)
-    {
-    	if(i == 0)
-        {
-            printf("%d",  coef[i]);
-        }
-        else if(i == 1)
-        {
-            printf("%d  ",  coef[i]);
-        }
-        else
-        {
-            printf("%d  ", coef[i]);
-        }
-    }
-
-    return 0;
-
-}
 
 //MAIN
 
