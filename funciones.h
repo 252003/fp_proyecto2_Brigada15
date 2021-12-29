@@ -1,5 +1,5 @@
-#ifndef FUNCIONESH
-#define FUNCIONESH
+#ifndef __FUNCIONES_H__
+#define __FUNCIONES_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +25,8 @@ int division_monomio();
 int polinomio_teclado();
 //[8]leer polinomio de un archivo
 int polinomio_archivo();
+//[9]Ordenar elementos por el metodo de burbuja
+int burbuja();
 
 int opcion(int opc);
 
