@@ -75,6 +75,8 @@ int suma()
         }
     }
 
+    free(coef);//liberar memoria
+
     return 0;
     }
 
@@ -152,6 +154,7 @@ int resta()
             printf("%dx^%i + ", coef[i], i);
         }
     }
+    free(coef);//liberar memoria
 
     return 0;
     }
@@ -244,6 +247,12 @@ int multiplicacion()
             printf("%dx^%i + ", polinomioResultante[j], j);
         }
     }
+    free(coef);//liberar memoria
+    free(coef2);//liberar memoria
+    free(polinomioResultante);//liberar memoria
+
+    return 0;
+
 }
 
 //[4]Multiplicacion por un Escalar
@@ -251,7 +260,7 @@ int escalar()
 {
 	int i;
 	int *coef;
-    int grado1, max_grad, aux;
+    int grado1, aux;
 
     system("CLS");
 
@@ -262,7 +271,7 @@ int escalar()
     scanf("%i", &aux);
 
     /* inicializar arreglo  */
-    coef = (int*)malloc(max_grad*sizeof(int));
+    coef = (int*)malloc(grado1*sizeof(int));
 
 	 /* llenar arreglo con 0, para evitar errores */
     for(i = 0; i < grado1; i++)
@@ -307,6 +316,7 @@ int escalar()
             printf("%dx^%i + ", coef[i], i);
         }
     }
+    free(coef);//liberar memoria
 
     return 0;
 
@@ -415,6 +425,12 @@ int division_binomio()
         }
     }
     printf("\nEl residuo es: %d  ", res);
+
+    free(coef);//liberar memoria
+    free(coef2);//liberar memoria
+    free(polinomioResultante);//liberar memoria
+
+    return 0;
 }
 
 //[6]Division entre monomio
@@ -474,11 +490,87 @@ int division_monomio()
             printf("%dx^%i + ", coef[i], i-aux);
         }
     }
+    free(coef);//liberar memoria
 
     return 0;
 
 }
 
+//[9]Ordenar elementos por el metodo de burbuja
+int burbuja()
+{
+	int i,j;
+	int *coef;
+    int grado1, mov=0, aux;
+
+    system("CLS");
+
+    printf("Ingrese el grado del polinomio: ");
+    scanf("%i", &grado1);
+
+    /* inicializar arreglo  */
+    coef = (int*)malloc(grado1*sizeof(int));
+
+	 /* llenar arreglo con 0, para evitar errores */
+    for(i = 0; i < grado1; i++)
+    {
+        coef[i] = 0;
+    }
+
+    printf("\n\n----------------------------\n");
+    printf(" POLINOMIO\n");
+    printf("\n");
+
+    for(i = 0; i <= grado1; i++)
+    {
+        printf("Valor del coeficiente grado %i: ", i);
+        scanf("%d", &coef[i]);
+    }
+
+    printf("\n\n----------------------------\n");
+
+// Ordenación
+	for(i=0; i< grado1; i++){
+	// Comparaciones
+		for(j=0; j< grado1-i; j++)
+        {
+	// Intercambiar los elementos
+			if(coef[j] > coef[j+1])
+            {
+			aux=coef[j];
+			coef[j]=coef[j+1];
+			coef[j+1]=aux;
+			mov ++;
+            }
+        }
+    }
+
+    printf("\n\n----------------------------\n");
+    printf("RESULTADO\n");
+    printf("----------------------------\n");
+	printf("El numero de movimientos fue: %d \n",mov);
+	printf("\n");
+	printf("Los coeficientes ordenados son:  \n");
+
+    for(i = grado1; i >= 0; --i)
+    {
+    	if(i == 0)
+        {
+            printf("%d",  coef[i]);
+        }
+        else if(i == 1)
+        {
+            printf("%d  ",  coef[i]);
+        }
+        else
+        {
+            printf("%d  ", coef[i]);
+        }
+    }
+
+    return 0;
+
+}
 
 int opcion(int opc)
 {
