@@ -471,26 +471,29 @@ int division_monomio()
     printf("\n\n----------------------------\n");
 
 
-    printf("\n\n----------------------------\n");
+printf("\n\n----------------------------\n");
     printf("RESULTADO\n");
     printf("----------------------------\n");
 
     for(i = grado1; i >= 0; --i)
     {
-        if(i == 0)
-        {
-            printf("%d/x^%d", coef[i], aux);
-        }
-        else if(i == 1)
-        {
-            printf("x^%d + ",  coef[i]-aux);
-        }
-        else
+        if(i - aux > 1)
         {
             printf("%dx^%i + ", coef[i], i-aux);
         }
+        if(i - aux == 1)
+        {
+            printf("%dx + ", coef[i] );
+        }
+        if(i - aux == 0)
+        {
+            printf("%d ", coef[i]);
+        }
+        else if(i -aux < 0 )
+        {
+            printf("\nEl residuo es: %dx^%i", coef[i], i);
+        }        
     }
-    free(coef);//liberar memoria
 
     return 0;
 
@@ -560,11 +563,11 @@ int burbuja()
         }
         else if(i == 1)
         {
-            printf("%d  ",  coef[i]);
+            printf("%d ",  coef[i]);
         }
         else
         {
-            printf("%d  ", coef[i]);
+            printf("%d   ", coef[i]);
         }
     }
 
